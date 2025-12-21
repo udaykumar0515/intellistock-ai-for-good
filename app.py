@@ -66,17 +66,17 @@ st.markdown('<div class="sub-header">AI-Driven Inventory Health & Stock-Out Aler
 
 # Sidebar
 with st.sidebar:
-    st.image("https://via.placeholder.com/300x100/1f77b4/ffffff?text=IntelliStock", use_container_width=True)
+    st.image("https://via.placeholder.com/300x100/1f77b4/ffffff?text=IntelliStock", width="stretch")
     st.markdown("---")
     
     st.header("🔧 Setup")
     
     # Connection test
-    if st.button("Test Snowflake Connection", use_container_width=True):
+    if st.button("Test Snowflake Connection"):
         test_connection()
     
     # Initialize database
-    if st.button("Initialize Database", use_container_width=True):
+    if st.button("Initialize Database"):
         with st.spinner("Creating tables..."):
             if create_tables_if_not_exist():
                 st.success("✅ Database tables created successfully!")
@@ -84,7 +84,7 @@ with st.sidebar:
                 st.error("❌ Failed to create tables")
     
     # Load sample data
-    if st.button("Load Sample Data", use_container_width=True):
+    if st.button("Load Sample Data"):
         with st.spinner("Loading CSV data..."):
             if load_csv_data("data/inventory_sample.csv"):
                 st.success("✅ Sample data loaded successfully!")
@@ -241,7 +241,7 @@ try:
             height=400
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig)
     else:
         st.info("No data available for heatmap. Please load sample data.")
     
@@ -318,7 +318,7 @@ try:
     if not alerts.empty:
         st.dataframe(
             alerts,
-            use_container_width=True,
+
             hide_index=True,
             column_config={
                 "ORGANIZATION": "Organization",
@@ -411,7 +411,7 @@ try:
     if not reorder.empty:
         st.dataframe(
             reorder,
-            use_container_width=True,
+
             hide_index=True,
             column_config={
                 "ORGANIZATION": "Organization",
@@ -448,7 +448,7 @@ try:
                 color='Urgency Level',
                 color_discrete_map={'CRITICAL': '#d00', 'HIGH': '#f80', 'MEDIUM': '#fd0'}
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig)
     else:
         st.success("✅ No reorder recommendations at this time.")
 
