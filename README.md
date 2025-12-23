@@ -8,19 +8,26 @@ Built for Snowflake AI for Good Hackathon
 
 ## 📋 Overview
 
-IntelliStock is a decision support system designed to help organizations managing essential goods (hospitals, NGOs, public distribution systems) detect stock-out risks early and make informed procurement decisions.
+IntelliStock is a **decision-support system** designed to help organizations managing essential goods (hospitals, NGOs, public distribution systems) **know what to do first** when stock-outs threaten service delivery.
+
+**Unlike traditional dashboards** that show "what's happening," IntelliStock answers:
+
+- **What matters most?** → Action priority scoring ranks items by urgency
+- **What should I act on first?** → Today's Action Panel shows top 3 priorities
+- **Why is that action urgent?** → Clear, rule-based explanations
 
 ### Problem Statement
 
 Organizations managing essential supplies face:
 
 - **Delayed detection** of stock-outs leading to service disruptions
-- **Lack of visibility** across multiple locations
-- **Reactive procurement** decisions instead of proactive planning
+- **Information overload** with dozens of alerts requiring manual prioritization
+- **Reactive procurement** decisions instead of proactive, prioritized action
+- **Cognitive burden** on time-pressed staff to interpret analytics
 
 ### Solution
 
-IntelliStock provides:
+IntelliStock provides **decision-first intelligence**:
 
 - **Early risk detection** using rule-based analytics
 - **Visual dashboards** showing inventory health across locations
@@ -53,6 +60,30 @@ IntelliStock provides:
 - Calculated reorder quantities for items at risk
 - Urgency levels (CRITICAL, HIGH, MEDIUM)
 - Summary analytics by urgency
+
+---
+
+## 🎯 How IntelliStock Helps Decide What to Do First
+
+### Traditional Dashboards Show Data
+
+❌ Display 45 high-risk alerts  
+❌ User must manually interpret and prioritize  
+❌ Cognitive overload for time-pressed staff  
+❌ Risk of overlooking critical items
+
+### IntelliStock Provides Decisions
+
+✅ **Action Priority Scoring** → Deterministic ranking using lead time, usage patterns, and criticality  
+✅ **Today's Action Panel** → Immediately shows top 3 most urgent actions  
+✅ **Clear Explanations** → Rule-based reasoning for every recommendation  
+✅ **Zero Manual Prioritization** → Decision ready in 30 seconds
+
+**Example:**  
+Instead of: _"45 items flagged as high-risk - analyze spreadsheet to decide priorities"_  
+IntelliStock shows: _"Reorder Insulin at City Hospital – Emergency Unit (Priority: 42.3)"_
+
+**Result:** Hospital staff can act immediately without analyzing dashboards or comparing metrics.
 
 ---
 
