@@ -254,9 +254,9 @@ The application is working correctly if:
 
 ---
 
-## 🚫 Non-Scope
+## 🚫 Non-Scope (Hackathon Prototype)
 
-This application **does NOT** include:
+This hackathon prototype **does NOT** include:
 
 - User authentication or role management
 - CRUD operations or transaction handling
@@ -265,9 +265,9 @@ This application **does NOT** include:
 - External API integrations
 - ML models or predictive forecasting
 - Snowflake Marketplace deployment
-- Production-grade error handling or monitoring
+- Advanced error handling or monitoring
 
-These features are intentionally excluded per the project requirements.
+These features are intentionally excluded as this is a hackathon prototype demonstrating core analytics capabilities.
 
 ---
 
