@@ -66,7 +66,6 @@ st.markdown('<div class="sub-header">AI-Driven Inventory Health & Stock-Out Aler
 
 # Sidebar
 with st.sidebar:
-    st.image("https://via.placeholder.com/300x100/1f77b4/ffffff?text=IntelliStock", width="stretch")
     st.markdown("---")
     
     st.header("🔧 Setup")
@@ -112,7 +111,8 @@ with st.sidebar:
         items = execute_query(item_query)
         item_list = ['All'] + items['ITEM'].tolist() if not items.empty else ['All']
         
-    except:
+    except Exception as e:
+        st.warning(f"⚠️ Could not load filter options. Please initialize database and load data first.")
         org_list = ['All']
         loc_list = ['All']
         item_list = ['All']
@@ -253,14 +253,18 @@ try:
     st.header("⚠️ Stock-Out Alerts (HIGH Risk)")
     st.markdown("Items at high risk of stock-out (days left ≤ lead time)")
     
-    # Build alerts query with filters
+    # Build alerts query with filters (using safe SQL escaping)
     where_clauses = []
     if selected_org != 'All':
-        where_clauses.append(f"organization = '{selected_org}'")
+        # Use replace to escape single quotes for SQL safety
+        safe_org = selected_org.replace("'", "''")
+        where_clauses.append(f"organization = '{safe_org}'")
     if selected_loc != 'All':
-        where_clauses.append(f"location = '{selected_loc}'")
+        safe_loc = selected_loc.replace("'", "''")
+        where_clauses.append(f"location = '{safe_loc}'")
     if selected_item != 'All':
-        where_clauses.append(f"item = '{selected_item}'")
+        safe_item = selected_item.replace("'", "''")
+        where_clauses.append(f"item = '{safe_item}'")
     
     where_str = " AND " + " AND ".join(where_clauses) if where_clauses else ""
     
