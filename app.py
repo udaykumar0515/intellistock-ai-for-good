@@ -157,6 +157,86 @@ with st.sidebar:
 # Main content
 try:
     # =========================================
+    # SECTION 0: Today's Action Panel
+    # =========================================
+    st.markdown("### 🎯 What You Should Do Today")
+    st.caption("Top priority actions based on stock-out risk, usage patterns, and criticality")
+    
+    # Reuse same query structure as Stock-Out Alerts (no divergent logic)
+    action_panel_query = f"""
+    WITH analytics AS (
+        SELECT 
+            organization,
+            location,
+            item,
+            closing_stock,
+            lead_time_days,
+            AVG(issued) OVER (PARTITION BY organization, location, item) as avg_daily_usage
+        FROM INVENTORY
+        WHERE 1=1 {where_str}
+    ),
+    risk_analysis AS (
+        SELECT 
+            organization,
+            location,
+            item,
+            closing_stock,
+            lead_time_days,
+            avg_daily_usage,
+            CASE 
+                WHEN avg_daily_usage = 0 THEN 9999
+                ELSE closing_stock / avg_daily_usage 
+            END as days_left
+        FROM analytics
+    ),
+    risk_status AS (
+        SELECT 
+            *,
+            CASE 
+                WHEN days_left <= lead_time_days THEN 'HIGH'
+                ELSE 'NORMAL'
+            END as risk_status
+        FROM risk_analysis
+    )
+    SELECT 
+        organization,
+        location,
+        item,
+        closing_stock,
+        ROUND(avg_daily_usage, 2) as avg_daily_usage,
+        ROUND(days_left, 2) as days_left,
+        lead_time_days
+    FROM risk_status
+    WHERE risk_status = 'HIGH'
+    """
+    
+    try:
+        top_actions = execute_query(action_panel_query)
+        
+        if not top_actions.empty:
+            # Calculate priority scores (same logic as alerts section)
+            top_actions['PRIORITY_SCORE'] = top_actions.apply(calculate_priority_score, axis=1)
+            top_actions = top_actions.sort_values('PRIORITY_SCORE', ascending=False).head(3)
+            
+            # Display each action with clear explanation
+            for idx, row in top_actions.iterrows():
+                col1, col2 = st.columns([4, 1])
+                with col1:
+                    st.markdown(f"**{row['ITEM']}** • {row['ORGANIZATION']} – {row['LOCATION']}")
+                    # Rule-based explanation (deterministic, no AI)
+                    explanation = f"Reorder {row['ITEM']} at {row['ORGANIZATION']} – {row['LOCATION']}. High daily usage and long supplier lead time make this the most urgent action."
+                    st.caption(explanation)
+                with col2:
+                    st.metric("Priority", f"{row['PRIORITY_SCORE']:.1f}")
+        else:
+            st.success("✅ No urgent actions needed today! All inventory levels are healthy.")
+            
+    except Exception as e:
+        st.info("💡 Click 'Initialize Database' and 'Load Sample Data' to see action recommendations")
+    
+    st.markdown("---")
+    
+    # =========================================
     # SECTION 1: Overview Metrics
     # =========================================
     st.header("📊 Overview Metrics")
