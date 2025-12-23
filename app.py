@@ -64,6 +64,36 @@ st.markdown("""
 st.markdown('<div class="main-header">📦 IntelliStock</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">AI-Driven Inventory Health & Stock-Out Alert System</div>', unsafe_allow_html=True)
 
+# Helper function for priority scoring
+def calculate_priority_score(row):
+    """
+    Calculate action priority score for high-risk items.
+    Higher score = more urgent action required.
+    
+    Formula: (lead_time * 2) + (avg_usage * 1.5) + criticality - (stock * 0.5)
+    """
+    location = row.get('LOCATION', '')
+    item = row.get('ITEM', '')
+    
+    # Criticality scoring based on location and item type
+    if 'Emergency Unit' in location:
+        criticality = 10
+    elif item in ['Paracetamol', 'Insulin', 'Syringes', 'Bandages', 'Masks', 'Gloves']:
+        criticality = 7
+    elif item in ['Rice']:
+        criticality = 5
+    else:
+        criticality = 3
+    
+    # Priority formula (deterministic, no ML)
+    score = (
+        (row['LEAD_TIME_DAYS'] * 2) +
+        (row['AVG_DAILY_USAGE'] * 1.5) +
+        criticality -
+        (row['CLOSING_STOCK'] * 0.5)
+    )
+    return round(score, 2)
+
 # Sidebar
 with st.sidebar:
     st.markdown("---")
@@ -320,6 +350,11 @@ try:
     alerts = execute_query(alerts_query)
     
     if not alerts.empty:
+        # Calculate priority scores for HIGH-risk items only
+        alerts['PRIORITY_SCORE'] = alerts.apply(calculate_priority_score, axis=1)
+        # Sort by priority (highest first) instead of days_left
+        alerts = alerts.sort_values('PRIORITY_SCORE', ascending=False)
+        
         st.dataframe(
             alerts,
 
@@ -332,7 +367,12 @@ try:
                 "AVG_DAILY_USAGE": st.column_config.NumberColumn("Avg Daily Usage", format="%.2f units"),
                 "DAYS_LEFT": st.column_config.NumberColumn("Days Left", format="%.2f days"),
                 "LEAD_TIME_DAYS": st.column_config.NumberColumn("Lead Time", format="%d days"),
-                "RISK_STATUS": "Risk Status"
+                "RISK_STATUS": "Risk Status",
+                "PRIORITY_SCORE": st.column_config.NumberColumn(
+                    "Priority", 
+                    format="%.1f",
+                    help="Higher score = more urgent. Based on lead time, usage, and criticality."
+                )
             }
         )
         
