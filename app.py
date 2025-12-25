@@ -162,6 +162,74 @@ def create_sparkline(org, location, item):
     except Exception as e:
         return None
 
+def generate_action_panel_pdf(top_actions_df):
+    """Generate PDF of Today's Action Panel."""
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib.units import inch
+    from io import BytesIO
+    from datetime import datetime
+    
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Title
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=24,
+        textColor=colors.HexColor('#1f77b4'),
+        spaceAfter=30,
+        alignment=1  # Center
+    )
+    elements.append(Paragraph("IntelliStock - Today's Action Panel", title_style))
+    
+    # Date
+    date_style = styles['Normal']
+    elements.append(Paragraph(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}", date_style))
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # Action items table
+    table_data = [['Priority', 'Item', 'Organization', 'Location', 'Days Left', 'Score']]
+    
+    for idx, (_, row) in enumerate(top_actions_df.iterrows(), 1):
+        table_data.append([
+            str(idx),
+            row['ITEM'],
+            row['ORGANIZATION'],
+            row['LOCATION'],
+            f"{row['DAYS_LEFT']:.1f}",
+            f"{row['PRIORITY_SCORE']:.1f}"
+        ])
+    
+    table = Table(table_data, colWidths=[0.6*inch, 1.5*inch, 1.5*inch, 1.5*inch, 1*inch, 0.8*inch])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1f77b4')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.lightgrey])
+    ]))
+    
+    elements.append(table)
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # Signature line
+    elements.append(Paragraph("Authorized by: _______________________", styles['Normal']))
+    elements.append(Spacer(1, 0.2*inch))
+    elements.append(Paragraph("Date: _______________________", styles['Normal']))
+    
+    doc.build(elements)
+    buffer.seek(0)
+    return buffer.getvalue()
+
 # Sidebar
 with st.sidebar:
     st.markdown("---")
@@ -330,6 +398,19 @@ try:
                         st.caption(explanation)
                     with col2:
                         st.metric("Priority", f"{row['PRIORITY_SCORE']:.1f}")
+                
+                # Add PDF export button
+                st.markdown("---")
+                if st.button("📄 Export to PDF", key="export_pdf_button"):
+                    from datetime import datetime
+                    pdf_bytes = generate_action_panel_pdf(top_actions_filtered)
+                    st.download_button(
+                        label="⬇️ Download Action Panel PDF",
+                        data=pdf_bytes,
+                        file_name=f"intellistock_actions_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf",
+                        mime="application/pdf",
+                        key="download_pdf_button"
+                    )
             else:
                 st.info("✅ All urgent items have been marked as ordered!")
         else:

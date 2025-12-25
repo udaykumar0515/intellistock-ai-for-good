@@ -3,3 +3,4 @@ snowflake-connector-python[secure-local-storage]>=3.0.0
 pandas>=2.0.0
 plotly>=5.17.0
 python-dotenv>=1.0.0
+reportlab>=4.0.0
