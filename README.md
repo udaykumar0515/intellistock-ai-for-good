@@ -1,218 +1,93 @@
-# IntelliStock
+# IntelliStock v2.1 - AI-Driven Inventory Health & Stock-Out Alert System
 
-**AI-Driven Inventory Health & Stock-Out Alert System**
+> **Hackathon Submission:** Snowflake AI for Good Hackathon 2024  
+> **Version:** 2.1 (Multi-Page Architecture)  
+> **Status:** Production Ready ✅
 
-Built for Snowflake AI for Good Hackathon
+## 🎯 Overview
 
----
+IntelliStock is an intelligent inventory management system designed for essential goods organizations (hospitals, NGOs, government agencies). It provides real-time stock-out predictions, priority-based action recommendations, and data-driven decision support.
 
-## 📋 Overview
+### Key Features
 
-IntelliStock is a **decision-support system** designed to help organizations managing essential goods (hospitals, NGOs, public distribution systems) **know what to do first** when stock-outs threaten service delivery.
-
-**Unlike traditional dashboards** that show "what's happening," IntelliStock answers:
-
-- **What matters most?** → Action priority scoring ranks items by urgency
-- **What should I act on first?** → Today's Action Panel shows top 3 priorities
-- **Why is that action urgent?** → Clear, rule-based explanations
-
-### Problem Statement
-
-Organizations managing essential supplies face:
-
-- **Delayed detection** of stock-outs leading to service disruptions
-- **Information overload** with dozens of alerts requiring manual prioritization
-- **Reactive procurement** decisions instead of proactive, prioritized action
-- **Cognitive burden** on time-pressed staff to interpret analytics
-
-### Solution
-
-IntelliStock provides **decision-first intelligence**:
-
-- **Early risk detection** using rule-based analytics
-- **Visual dashboards** showing inventory health across locations
-- **Actionable recommendations** with calculated reorder quantities
-- **Deterministic explanations** for every alert
+- **📊 Multi-Page Dashboard:** Clean, professional UI with dedicated pages for different functions
+- **🎯 Today's Action Panel:** Top 3 priority items requiring immediate attention
+- **📈 7-Day Trend Visualization:** Sparkline charts showing stock movement patterns
+- **🧮 What-If Calculator:** Project inventory coverage based on order quantities
+- **📄 PDF Export:** Download action items for offline sharing
+- **📁 CSV Upload:** Custom data upload with comprehensive validation
+- **⚙️ Configurable Scoring:** Customize criticality rules via JSON or UI
+- **📦 Mark as Ordered:** Track items you've already ordered
 
 ---
 
-## ✨ Features
-
-### 1. Overview Metrics
-
-- Total organizations tracked
-- Total items monitored
-- Count of HIGH-risk alerts
-
-### 2. Inventory Heatmap
-
-- Visual representation of closing stock by item and location
-- Color-coded intensity for quick identification of low stock
-
-### 3. Stock-Out Alerts
-
-- Filtered view of HIGH-risk items (days left ≤ lead time)
-- Detailed metrics: avg daily usage, days left, lead time
-- Rule-based explanations for each alert
-
-### 4. Reorder Recommendations
-
-- Calculated reorder quantities for items at risk
-- Urgency levels (CRITICAL, HIGH, MEDIUM)
-- Summary analytics by urgency
-
----
-
-## 🎯 How IntelliStock Helps Decide What to Do First
-
-### Traditional Dashboards Show Data
-
-❌ Display 45 high-risk alerts  
-❌ User must manually interpret and prioritize  
-❌ Cognitive overload for time-pressed staff  
-❌ Risk of overlooking critical items
-
-### IntelliStock Provides Decisions
-
-✅ **Action Priority Scoring** → Deterministic ranking using lead time, usage patterns, and criticality  
-✅ **Today's Action Panel** → Immediately shows top 3 most urgent actions  
-✅ **Clear Explanations** → Rule-based reasoning for every recommendation  
-✅ **Zero Manual Prioritization** → Decision ready in 30 seconds
-
-**Example:**  
-Instead of: _"45 items flagged as high-risk - analyze spreadsheet to decide priorities"_  
-IntelliStock shows: _"Reorder Insulin at City Hospital – Emergency Unit (Priority: 42.3)"_
-
-**Result:** Hospital staff can act immediately without analyzing dashboards or comparing metrics.
-
----
-
-## 🎯 Impact: AI for Good
-
-IntelliStock supports organizations serving communities by:
-
-- **Preventing stock-outs** of essential medicines and supplies
-- **Optimizing procurement** to reduce waste and costs
-- **Improving service delivery** for healthcare and aid organizations
-- **Enabling data-driven decisions** without requiring ML expertise
-
----
-
-## 🏗️ Architecture
-
-```
-┌─────────────────┐
-│  Streamlit App  │  (Local execution)
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│   Snowflake DB  │  (Cloud data warehouse)
-│                 │
-│  • INVENTORY    │  (Table)
-│  • Analytics    │  (SQL queries)
-└─────────────────┘
-```
-
-**Key Design Principles:**
-
-- SQL is the source of truth for all analytics logic
-- No ML models or probabilistic forecasts
-- Deterministic, rule-based calculations
-- Filters slice data without altering logic
-
----
-
-## 📊 Analytics Logic
-
-All calculations are performed in SQL:
-
-### Average Daily Usage
-
-```sql
-AVG(issued) OVER (PARTITION BY organization, location, item)
-```
-
-### Days of Stock Left
-
-```sql
-closing_stock / avg_daily_usage
-```
-
-### Risk Status
-
-```sql
-CASE WHEN days_left <= lead_time_days
-     THEN 'HIGH'
-     ELSE 'NORMAL'
-END
-```
-
-### Reorder Quantity
-
-```sql
-GREATEST(0, (lead_time_days * avg_daily_usage) - closing_stock)
-```
-
----
-
-## 🚀 Setup Instructions
+## 🚀 Quick Start
 
 ### Prerequisites
 
 - Python 3.8 or higher
-- Snowflake account with browser-based SSO access
-- Git (optional, for version control)
+- Snowflake account with credentials
+- Git (for cloning)
 
-### 1. Clone Repository
+### Installation
 
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/intellistock-ai-for-good.git
+   cd intellistock-ai-for-good
+   ```
+
+2. **Create virtual environment:**
+   ```bash
+   python -m venv venv
+   ```
+
+3. **Activate virtual environment:**
+   - Windows:
+     ```bash
+     venv\Scripts\activate
+     ```
+   - macOS/Linux:
+     ```bash
+     source venv/bin/activate
+     ```
+
+4. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. **Configure Snowflake credentials:**
+   - Copy `.env.example` to `.env`
+   - Fill in your Snowflake credentials:
+     ```
+     SNOWFLAKE_ACCOUNT=your_account
+     SNOWFLAKE_USER=your_username
+     SNOWFLAKE_PASSWORD=your_password
+     SNOWFLAKE_DATABASE=your_database
+     SNOWFLAKE_SCHEMA=your_schema
+     SNOWFLAKE_WAREHOUSE=your_warehouse
+     ```
+
+### Running the Application
+
+**Option 1: Using the batch file (Windows):**
 ```bash
-git clone https://github.com/udaykumar0515/intellistock-ai-for-good.git
-cd intellistock-ai-for-good
+run.bat
 ```
 
-### 2. Install Dependencies
-
+**Option 2: Manual command:**
 ```bash
-pip install -r requirements.txt
+venv\Scripts\python.exe -m streamlit run Home.py
 ```
 
-### 3. Configure Snowflake Connection
-
-Create a `.env` file based on `.env.example`:
-
+**Option 3: macOS/Linux:**
 ```bash
-cp .env.example .env
+source venv/bin/activate
+python -m streamlit run Home.py
 ```
 
-Edit `.env` with your Snowflake credentials:
-
-```env
-SNOWFLAKE_ACCOUNT=AQZZSNT-TF92378
-SNOWFLAKE_USER=UDAYKUMARH
-SNOWFLAKE_ROLE=ACCOUNTADMIN
-SNOWFLAKE_WAREHOUSE=COMPUTE_WH
-SNOWFLAKE_DATABASE=INTELLISTOCK_DB
-SNOWFLAKE_SCHEMA=PUBLIC
-```
-
-**Important:** The `.env` file is excluded from Git (.gitignore) to protect credentials.
-
-### 4. Run the Application
-
-```bash
-streamlit run app.py
-```
-
-The application will open in your browser at `http://localhost:8501`
-
-### 5. Initialize Database (First Run)
-
-In the Streamlit app sidebar:
-
-1. Click **"Test Snowflake Connection"** to verify connectivity
-2. Click **"Initialize Database"** to create tables (uses idempotent DDL)
-3. Click **"Load Sample Data"** to load the synthetic inventory dataset
+The app will open automatically in your browser at `http://localhost:8503`
 
 ---
 
@@ -220,136 +95,300 @@ In the Streamlit app sidebar:
 
 ```
 intellistock-ai-for-good/
-├── app.py                      # Main Streamlit application
-├── snowflake_connector.py      # Snowflake connection management
-├── .env.example                # Environment variable template
-├── .env                        # Your credentials (not in Git)
-├── .gitignore                  # Excludes .env and sensitive files
-├── requirements.txt            # Python dependencies
-├── README.md                   # This file
-├── sql/
-│   ├── create_tables.sql       # DDL for database setup
-│   └── analytics.sql           # Analytics queries (source of truth)
+├── Home.py                      # Landing page with navigation
+├── pages/
+│   ├── 1__Dashboard.py          # Analytics & decision support
+│   ├── 2__Data_Management.py    # CSV upload & validation
+│   └── 3__Configuration.py      # Criticality scoring editor
+├── utils/
+│   ├── calculations.py          # Business logic helpers
+│   └── csv_validator.py         # Data validation logic
 ├── data/
-│   └── inventory_sample.csv    # Synthetic inventory data
-└── utils/
-    └── calculations.py         # Validation functions (not used in app)
+│   └── inventory_sample.csv     # Sample dataset
+├── sql/
+│   ├── create_tables.sql        # Database schema
+│   └── analytics_queries.sql    # Core analytical queries
+├── snowflake_connector.py       # Database connection handler
+├── criticality_config.json      # Scoring rules configuration
+├── requirements.txt             # Python dependencies
+├── run.bat                      # Windows startup script
+├── .env.example                 # Environment template
+└── README.md                    # This file
 ```
 
 ---
 
-## 📝 Data Schema
+## 🗂️ Application Pages
 
-### INVENTORY Table
+### 🏠 Home
+Landing page with navigation to all sections and feature overview.
 
-| Column         | Type    | Description               |
-| -------------- | ------- | ------------------------- |
-| date           | DATE    | Transaction date          |
-| organization   | STRING  | Organization name         |
-| location       | STRING  | Storage location          |
-| item           | STRING  | Item name                 |
-| opening_stock  | INTEGER | Stock at start of day     |
-| received       | INTEGER | Quantity received         |
-| issued         | INTEGER | Quantity issued/consumed  |
-| closing_stock  | INTEGER | Stock at end of day       |
-| lead_time_days | INTEGER | Supplier lead time (days) |
+### 📊 Dashboard
+Real-time analytics and decision support:
+- **Today's Action Panel:** Top 3 priority reorder recommendations
+- **Overview Metrics:** Total organizations, items, high-risk alerts
+- **Inventory Heatmap:** Visual representation of stock levels
+- **What-If Calculator:** Projection tool for order planning
+- **Stock-Out Alerts:** Full list with trends and details
+- **Reorder Recommendations:** Suggested order quantities
+
+### 📁 Data Management
+Upload and manage inventory data:
+- **CSV Upload:** Drag-and-drop or browse to upload
+- **Schema Validation:** Automatic checks for data quality
+- **Data Preview:** View first 20 rows before loading
+- **Database Tools:** Test connection, initialize tables, load sample data
+- **Organization Profile:** Capture metadata about your organization
+
+### ⚙️ Configuration
+Customize priority scoring rules:
+- **Location Rules:** Assign criticality scores to locations
+- **Item Rules:** Define critical item categories
+- **Default Score:** Set baseline criticality
+- **Save/Reset:** Persist changes or restore defaults
+
+---
+
+## 📊 Data Schema
+
+### Required CSV Columns
+
+| Column | Type | Description | Example |
+|--------|------|-------------|---------|
+| `date` | DATE | Transaction date | 2024-01-15 |
+| `organization` | STRING | Organization name | City Hospital |
+| `location` | STRING | Warehouse/clinic | Emergency Unit |
+| `item` | STRING | Product name | Paracetamol |
+| `opening_stock` | INTEGER | Stock at start | 100 |
+| `received` | INTEGER | Units received | 50 |
+| `issued` | INTEGER | Units distributed | 30 |
+| `closing_stock` | INTEGER | Stock at end | 120 |
+| `lead_time_days` | INTEGER | Supplier lead time | 7 |
+
+### Validation Rules
+
+- ✅ All 9 columns required (case-insensitive)
+- ✅ Dates must be YYYY-MM-DD format
+- ✅ Stock values must be non-negative integers
+- ✅ No empty organization/location/item names
+- ⚠️ Formula check: closing = opening + received - issued (warning if mismatch)
+
+---
+
+## 🧮 Priority Scoring Formula
+
+```
+Priority Score = (Lead Time × 2) + (Daily Usage × 1.5) + Criticality - (Current Stock × 0.5)
+```
+
+**Components:**
+- **Lead Time (×2):** Longer supplier delivery times increase urgency
+- **Daily Usage (×1.5):** Higher consumption rates increase urgency
+- **Criticality:** Location/item importance (configurable 1-15)
+- **Current Stock (×0.5):** Lower stock increases urgency
+
+**Example:**
+```
+Item: Paracetamol @ Emergency Unit
+Lead Time: 10 days
+Daily Usage: 20 units/day
+Criticality: 10 (Emergency Unit) + 7 (Critical Medicine) = 10 (max)
+Current Stock: 15 units
+
+Priority = (10 × 2) + (20 × 1.5) + 10 - (15 × 0.5)
+         = 20 + 30 + 10 - 7.5
+         = 52.5 (HIGH PRIORITY)
+```
+
+---
+
+## 🔧 Configuration
+
+### Criticality Scoring (`criticality_config.json`)
+
+Customize how locations and items are prioritized:
+
+```json
+{
+  "location_rules": [
+    {
+      "pattern": "Emergency Unit",
+      "score": 10,
+      "description": "Critical emergency care location"
+    }
+  ],
+  "item_rules": [
+    {
+      "items": ["Paracetamol", "Insulin", "Syringes"],
+      "score": 7,
+      "description": "Critical medical supplies"
+    }
+  ],
+  "default_score": 3
+}
+```
+
+**Editing:**
+- Via UI: Configuration page → Edit scores → Save
+- Via JSON: Edit `criticality_config.json` → Restart app
+
+---
+
+## 📦 Dependencies
+
+```
+streamlit>=1.28.0
+snowflake-connector-python>=3.0.0
+pandas>=2.0.0
+plotly>=5.14.0
+python-dotenv>=1.0.0
+reportlab>=4.0.0
+```
+
+Install all with: `pip install -r requirements.txt`
+
+---
+
+## 🧪 Testing
+
+### Quick Test Workflow
+
+1. **Start the app:** `run.bat` or `python -m streamlit run Home.py`
+2. **Go to Data Management**
+3. **Click "Initialize Database"** (first time only)
+4. **Click "Load Sample Data"**
+5. **Go to Dashboard** to see analytics
+6. **Test features:**
+   - Mark an item as ordered
+   - Use What-If Calculator
+   - Export PDF
+   - Adjust criticality scores in Configuration
 
 ### Sample Data
 
-The included dataset contains:
-
-- **3 organizations**: City Hospital, Regional NGO, Community Clinic
-- **3 locations**: Main Warehouse, Emergency Unit, Outreach Center
-- **7 items**: Paracetamol, Insulin, Rice, Masks, Gloves, Bandages, Syringes
-- **8 days** of records (2025-12-08 to 2025-12-15)
-- **76 total rows** with intentional HIGH-risk scenarios
+The `data/inventory_sample.csv` contains:
+- **3 organizations:** City Hospital, Rural Health Center, Community Clinic
+- **7 items:** Paracetamol, Bandages, Syringes, Masks, Gloves, Insulin, Rice
+- **Multiple locations:** Emergency Unit, Main Warehouse, Outpatient, etc.
+- **30+ days** of transaction history
 
 ---
 
-## 🔍 Verification
+## 🚀 Deployment
 
-### Success Criteria
+### Streamlit Cloud
 
-The application is working correctly if:
-✅ Metrics in Streamlit exactly match SQL query outputs  
-✅ All analytics logic is traceable to SQL (not Python)  
-✅ Filters slice data without altering calculations
+1. Push code to GitHub
+2. Go to [share.streamlit.io](https://share.streamlit.io)
+3. Deploy from repository
+4. Add Snowflake secrets in Streamlit settings
 
-### Manual Testing
+### Snowflake Native App (Future)
 
-1. **Test Snowflake connection** using sidebar button
-2. **Run SQL queries directly** in Snowflake console (from `sql/analytics.sql`)
-3. **Compare results** with Streamlit dashboard
-4. **Apply filters** and verify calculations remain consistent
-5. **Check explanations** are deterministic and rule-based
-
----
-
-## 🚫 Non-Scope (Hackathon Prototype)
-
-This hackathon prototype **does NOT** include:
-
-- User authentication or role management
-- CRUD operations or transaction handling
-- POS/billing systems
-- Email/SMS notifications
-- External API integrations
-- ML models or predictive forecasting
-- Snowflake Marketplace deployment
-- Advanced error handling or monitoring
-
-These features are intentionally excluded as this is a hackathon prototype demonstrating core analytics capabilities.
+This app can be packaged as a Snowflake Native App for:
+- Seamless installation via Snowflake Marketplace
+- Built-in data sharing across organizations
+- Native Snowflake authentication
 
 ---
 
-## 🛠️ Troubleshooting
+## 🔒 Security Notes
 
-### "Missing required environment variables"
-
-**Solution:** Create a `.env` file based on `.env.example` with your Snowflake credentials.
-
-### "Failed to connect to Snowflake"
-
-**Solution:**
-
-- Verify your Snowflake account and credentials
-- Ensure browser-based SSO (`externalbrowser`) is configured
-- Check network connectivity
-
-### "No data available"
-
-**Solution:** Click "Load Sample Data" in the sidebar to import `data/inventory_sample.csv`.
-
-### "Query execution failed"
-
-**Solution:**
-
-- Ensure database and tables are initialized
-- Verify your Snowflake role has necessary permissions
-- Check SQL syntax in error details
+- **Credentials:** Never commit `.env` file (already in `.gitignore`)
+- **SQL Injection:** Current implementation uses string escaping; parameterized queries recommended for production
+- **Access Control:** Implement Snowflake RBAC for multi-user deployments
+- **Data Privacy:** Ensure compliance with healthcare data regulations (HIPAA, GDPR)
 
 ---
 
-## 📚 Additional Resources
+## 📝 Version History
 
-- [Snowflake Documentation](https://docs.snowflake.com/)
-- [Streamlit Documentation](https://docs.streamlit.io/)
-- [Project Repository](https://github.com/udaykumar0515/intellistock-ai-for-good)
+### v2.1 (Current) - Multi-Page Architecture
+- ✅ Restructured into multi-page Streamlit app
+- ✅ Added CSV upload with validation
+- ✅ Added organization metadata capture
+- ✅ Created dedicated Data Management page
+- ✅ Created Configuration page for scoring rules
+- ✅ Improved UX with clean, organized pages
+
+### v2.0 - Decision Support Features
+- ✅ Mark as Ordered tracking
+- ✅ 7-day historical sparklines
+- ✅ What-If order calculator
+- ✅ PDF export for action panel
+- ✅ Configurable criticality scoring
+
+### v1.0 - Core Analytics
+- ✅ Snowflake integration
+- ✅ Stock-out risk prediction
+- ✅ Priority scoring algorithm
+- ✅ Today's Action Panel
+- ✅ Inventory heatmap
+
+---
+
+## 🤝 Contributing
+
+This is a hackathon project, but suggestions are welcome!
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
 
 ---
 
 ## 📄 License
 
-This project was created for the Snowflake AI for Good Hackathon.
+This project is open source and available for use by humanitarian organizations.
 
 ---
 
-## 🙏 Acknowledgments
+## 👥 Team
 
-- **Snowflake** for providing the cloud data platform
-- **AI for Good Hackathon** organizers for the opportunity
-- Organizations serving communities with essential goods
+**Hackathon Project:** Snowflake AI for Good 2024
+
+Built with ❤️ for essential goods organizations worldwide.
 
 ---
 
-**Built with ❤️ for social impact**
+## 🆘 Troubleshooting
+
+### Common Issues
+
+**"Module not found" errors:**
+```bash
+# Ensure venv is activated
+venv\Scripts\activate
+
+# Reinstall dependencies
+pip install -r requirements.txt
+```
+
+**Snowflake connection fails:**
+- Check `.env` credentials
+- Verify Snowflake account is active
+- Test with: Data Management → Test Connection
+
+**Pages don't load:**
+- Ensure running with venv Python: `venv\Scripts\python.exe -m streamlit run Home.py`
+- Check console for import errors
+- Restart Streamlit server
+
+**Data doesn't refresh:**
+- Click browser refresh (F5)
+- Verify data loaded: Data Management → Load Sample Data
+- Check Snowflake query logs
+
+---
+
+## 📧 Contact
+
+For questions or support, please open an issue on GitHub.
+
+---
+
+**🎉 Thank you for using IntelliStock!**
+
+*Making inventory management intelligent, one stock-out alert at a time.* 📦✨
