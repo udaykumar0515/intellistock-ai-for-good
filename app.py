@@ -114,6 +114,54 @@ def toggle_ordered(org, location, item):
     else:
         st.session_state.ordered_items.add(key)
 
+def create_sparkline(org, location, item):
+    """Generate sparkline for last 7 days of closing stock."""
+    query = f"""
+    WITH recent_data AS (
+        SELECT date, closing_stock
+        FROM INVENTORY
+        WHERE organization = '{org.replace("'", "''")}'
+          AND location = '{location.replace("'", "''")}'
+          AND item = '{item.replace("'", "''")}'
+        ORDER BY date DESC
+        LIMIT 7
+    )
+    SELECT date, closing_stock
+    FROM recent_data
+    ORDER BY date ASC
+    """
+    
+    try:
+        df = execute_query(query)
+        if df.empty or len(df) < 2:
+            return None
+        
+        # Create minimal Plotly sparkline
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=df['DATE'],
+            y=df['CLOSING_STOCK'],
+            mode='lines',
+            line=dict(width=2, color='#1f77b4'),
+            fill='tozeroy',
+            fillcolor='rgba(31, 119, 180, 0.2)'
+        ))
+        
+        fig.update_layout(
+            showlegend=False,
+            height=50,
+            margin=dict(l=0, r=0, t=0, b=0),
+            xaxis=dict(visible=False),
+            yaxis=dict(visible=False),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            hovermode=False
+        )
+        
+        return fig
+    except Exception as e:
+        return None
+
 # Sidebar
 with st.sidebar:
     st.markdown("---")
@@ -532,6 +580,40 @@ try:
         for idx, row in alerts.head(3).iterrows():
             explanation = generate_explanation(row.to_dict())
             st.warning(f"**{row['ITEM']}**: {explanation}")
+        
+        # Add 7-day trend sparklines section
+        st.markdown("---")
+        st.subheader("📈 7-Day Stock Trends")
+        st.caption("Visual trends of closing stock for top alerts")
+        
+        for idx, row in alerts.head(5).iterrows():  # Show trends for top 5
+            cols = st.columns([3, 1])
+            
+            with cols[0]:
+                st.markdown(f"**{row['ITEM']}** • {row['ORGANIZATION']} – {row['LOCATION']}")
+                subcols = st.columns(4)
+                with subcols[0]:
+                    st.metric("Current Stock", f"{row['CLOSING_STOCK']:.0f}")
+                with subcols[1]:
+                    st.metric("Days Left", f"{row['DAYS_LEFT']:.1f}")
+                with subcols[2]:
+                    st.metric("Priority", f"{row['PRIORITY_SCORE']:.1f}")
+                with subcols[3]:
+                    st.metric("Avg Usage", f"{row['AVG_DAILY_USAGE']:.1f}/day")
+            
+            with cols[1]:
+                # Generate and display sparkline
+                sparkline = create_sparkline(
+                    row['ORGANIZATION'],
+                    row['LOCATION'],
+                    row['ITEM']
+                )
+                if sparkline:
+                    st.plotly_chart(sparkline, use_container_width=True, key=f"spark_{idx}")
+                else:
+                    st.caption("No trend data")
+            
+            st.markdown("---")
     else:
         st.success("✅ No HIGH-risk alerts! All inventory levels are healthy.")
     
