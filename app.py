@@ -462,6 +462,158 @@ try:
     st.markdown("---")
     
     # =========================================
+    # SECTION 2.5: What-If Order Calculator
+    # =========================================
+    st.header("🧮 What-If Order Calculator")
+    st.markdown("Calculate how long an order will last based on current usage patterns")
+    
+    # Fetch high-risk items for calculator
+    try:
+        calculator_query = f"""
+        WITH analytics AS (
+            SELECT 
+                organization,
+                location,
+                item,
+                closing_stock,
+                lead_time_days,
+                AVG(issued) OVER (PARTITION BY organization, location, item) as avg_daily_usage
+            FROM INVENTORY
+            WHERE 1=1 {where_str}
+        ),
+        risk_analysis AS (
+            SELECT 
+                organization,
+                location,
+                item,
+                closing_stock,
+                lead_time_days,
+                avg_daily_usage,
+                CASE 
+                    WHEN avg_daily_usage = 0 THEN 9999
+                    ELSE closing_stock / avg_daily_usage 
+                END as days_left
+            FROM analytics
+        )
+        SELECT 
+            organization,
+            location,
+            item,
+            closing_stock,
+            ROUND(avg_daily_usage, 2) as avg_daily_usage,
+            ROUND(days_left, 2) as days_left,
+            lead_time_days
+        FROM risk_analysis
+        WHERE days_left <= lead_time_days
+        ORDER BY days_left ASC
+        """
+        
+        calculator_items = execute_query(calculator_query)
+        
+        if not calculator_items.empty and len(calculator_items) > 0:
+            # Item selector
+            item_options = [
+                f"{row['ITEM']} ({row['ORGANIZATION']} - {row['LOCATION']})" 
+                for _, row in calculator_items.iterrows()
+            ]
+            
+            selected_calc_idx = st.selectbox(
+                "Select item to analyze",
+                options=range(len(item_options)),
+                format_func=lambda x: item_options[x],
+                key="calc_item_select"
+            )
+            
+            if selected_calc_idx is not None:
+                selected_row = calculator_items.iloc[selected_calc_idx]
+                org = selected_row['ORGANIZATION']
+                loc = selected_row['LOCATION']
+                item_name = selected_row['ITEM']
+                current_stock = float(selected_row['CLOSING_STOCK'])
+                avg_usage = float(selected_row['AVG_DAILY_USAGE'])
+                lead_time = float(selected_row['LEAD_TIME_DAYS'])
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.subheader("📊 Current Situation")
+                    st.metric("Current Stock", f"{current_stock:.0f} units")
+                    st.metric("Avg Daily Usage", f"{avg_usage:.2f} units/day")
+                    
+                    # Current days left
+                    current_days = current_stock / avg_usage if avg_usage > 0 else 9999
+                    st.metric("Current Days Left", f"{current_days:.1f} days")
+                    st.metric("Lead Time", f"{lead_time:.0f} days")
+                
+                with col2:
+                    st.subheader("🔮 Order Projection")
+                    
+                    # Default: enough for 30 days
+                    default_order = max(10, int(avg_usage * 30) - int(current_stock))
+                    
+                    order_qty = st.number_input(
+                        "Order Quantity (units)",
+                        min_value=0,
+                        max_value=10000,
+                        value=default_order,
+                        step=10,
+                        key="order_qty_input"
+                    )
+                    
+                    # Calculations
+                    new_stock = current_stock + order_qty
+                    new_days = new_stock / avg_usage if avg_usage > 0 else 9999
+                    days_gained = new_days - current_days
+                    
+                    st.metric(
+                        "Projected Stock After Order",
+                        f"{new_stock:.0f} units",
+                        delta=f"+{order_qty} units"
+                    )
+                    
+                    st.metric(
+                        "Projected Days Left",
+                        f"{new_days:.1f} days",
+                        delta=f"+{days_gained:.1f} days"
+                    )
+                    
+                    # Risk assessment
+                    if new_days > lead_time * 2:
+                        risk_color = "🟢"
+                        risk_text = "SAFE - Well stocked"
+                    elif new_days > lead_time:
+                        risk_color = "🟡"
+                        risk_text = "MODERATE - Adequate coverage"
+                    else:
+                        risk_color = "🔴"
+                        risk_text = "HIGH - Still at risk"
+                    
+                    st.info(f"{risk_color} **Risk Level:** {risk_text}")
+                
+                # Suggested safe quantity
+                st.markdown("---")
+                st.subheader("💡 Recommendations")
+                
+                # Calculate for 60 days coverage
+                safe_qty_60 = max(0, (60 * avg_usage) - current_stock)
+                # Calculate for 90 days coverage
+                safe_qty_90 = max(0, (90 * avg_usage) - current_stock)
+                
+                rec_col1, rec_col2 = st.columns(2)
+                with rec_col1:
+                    st.success(f"**60 days coverage:** Order {safe_qty_60:.0f} units")
+                with rec_col2:
+                    st.success(f"**90 days coverage:** Order {safe_qty_90:.0f} units")
+                
+        else:
+            st.info("✅ No high-risk items to analyze. System is healthy!")
+            
+    except Exception as e:
+        st.info("💡 Initialize database and load data to use the calculator")
+    
+    st.markdown("---")
+    
+    # =========================================
     # SECTION 3: Stock-Out Alerts
     # =========================================
     st.header("⚠️ Stock-Out Alerts (HIGH Risk)")
