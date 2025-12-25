@@ -65,6 +65,10 @@ st.markdown("""
 st.markdown('<div class="main-header">📦 IntelliStock</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">AI-Driven Inventory Health & Stock-Out Alert System</div>', unsafe_allow_html=True)
 
+# Initialize session state for tracking ordered items
+if 'ordered_items' not in st.session_state:
+    st.session_state.ordered_items = set()  # Store as (org, location, item) tuples
+
 # Helper function for priority scoring
 def calculate_priority_score(row):
     """Calculate action priority score for high-risk items."""
@@ -96,6 +100,19 @@ def calculate_priority_score(row):
     )
 
     return round(score, 2)
+
+# Helper functions for ordered item tracking
+def is_ordered(org, location, item):
+    """Check if item is marked as ordered."""
+    return (org, location, item) in st.session_state.ordered_items
+
+def toggle_ordered(org, location, item):
+    """Toggle ordered status for an item."""
+    key = (org, location, item)
+    if key in st.session_state.ordered_items:
+        st.session_state.ordered_items.remove(key)
+    else:
+        st.session_state.ordered_items.add(key)
 
 # Sidebar
 with st.sidebar:
@@ -245,18 +262,28 @@ try:
         if not top_actions.empty:
             # Calculate priority scores (same logic as alerts section)
             top_actions['PRIORITY_SCORE'] = top_actions.apply(calculate_priority_score, axis=1)
-            top_actions = top_actions.sort_values('PRIORITY_SCORE', ascending=False).head(3)
+            
+            # Filter out ordered items
+            top_actions['IS_ORDERED'] = top_actions.apply(
+                lambda row: is_ordered(row['ORGANIZATION'], row['LOCATION'], row['ITEM']), 
+                axis=1
+            )
+            top_actions_filtered = top_actions[~top_actions['IS_ORDERED']].copy()
+            top_actions_filtered = top_actions_filtered.sort_values('PRIORITY_SCORE', ascending=False).head(3)
             
             # Display each action with clear explanation
-            for idx, row in top_actions.iterrows():
-                col1, col2 = st.columns([4, 1])
-                with col1:
-                    st.markdown(f"**{row['ITEM']}** • {row['ORGANIZATION']} – {row['LOCATION']}")
-                    # Rule-based explanation (deterministic, no AI)
-                    explanation = f"Reorder {row['ITEM']} at {row['ORGANIZATION']} – {row['LOCATION']}. High daily usage and long supplier lead time make this the most urgent action."
-                    st.caption(explanation)
-                with col2:
-                    st.metric("Priority", f"{row['PRIORITY_SCORE']:.1f}")
+            if not top_actions_filtered.empty:
+                for idx, row in top_actions_filtered.iterrows():
+                    col1, col2 = st.columns([4, 1])
+                    with col1:
+                        st.markdown(f"**{row['ITEM']}** • {row['ORGANIZATION']} – {row['LOCATION']}")
+                        # Rule-based explanation (deterministic, no AI)
+                        explanation = f"Reorder {row['ITEM']} at {row['ORGANIZATION']} – {row['LOCATION']}. High daily usage and long supplier lead time make this the most urgent action."
+                        st.caption(explanation)
+                    with col2:
+                        st.metric("Priority", f"{row['PRIORITY_SCORE']:.1f}")
+            else:
+                st.info("✅ All urgent items have been marked as ordered!")
         else:
             st.success("✅ No urgent actions needed today! All inventory levels are healthy.")
             
@@ -449,6 +476,13 @@ try:
         # Sort by priority (highest first) instead of days_left
         alerts = alerts.sort_values('PRIORITY_SCORE', ascending=False)
         
+        # Add ordered status column
+        alerts['ORDERED'] = alerts.apply(
+            lambda row: is_ordered(row['ORGANIZATION'], row['LOCATION'], row['ITEM']),
+            axis=1
+        )
+        
+        # Display with ordered checkboxes
         st.dataframe(
             alerts,
 
@@ -466,9 +500,32 @@ try:
                     "Priority", 
                     format="%.1f",
                     help="Higher score = more urgent. Based on lead time, usage, and criticality."
+                ),
+                "ORDERED": st.column_config.CheckboxColumn(
+                    "Ordered",
+                    help="Mark item as ordered",
+                    default=False
                 )
             }
         )
+        
+        # Add mark/unmark buttons
+        st.markdown("##### Quick Actions")
+        for button_idx, (idx, row) in enumerate(alerts.head(5).iterrows()):  # Show buttons for top 5
+            item_key = f"{button_idx}_{row['ORGANIZATION']}_{row['LOCATION']}_{row['ITEM']}".replace(" ", "_")
+            cols = st.columns([3, 1, 1])
+            with cols[0]:
+                st.text(f"{row['ITEM']} at {row['ORGANIZATION']} - {row['LOCATION']}")
+            with cols[1]:
+                if not is_ordered(row['ORGANIZATION'], row['LOCATION'], row['ITEM']):
+                    if st.button(f"✓ Mark Ordered", key=f"mark_{item_key}"):
+                        toggle_ordered(row['ORGANIZATION'], row['LOCATION'], row['ITEM'])
+                        st.rerun()
+            with cols[2]:
+                if is_ordered(row['ORGANIZATION'], row['LOCATION'], row['ITEM']):
+                    if st.button(f"✗ Unmark", key=f"unmark_{item_key}"):
+                        toggle_ordered(row['ORGANIZATION'], row['LOCATION'], row['ITEM'])
+                        st.rerun()
         
         # Show explanations for top 3 alerts
         st.subheader("📝 Detailed Explanations")
@@ -479,6 +536,38 @@ try:
         st.success("✅ No HIGH-risk alerts! All inventory levels are healthy.")
     
     st.markdown("---")
+    
+    # =========================================
+    # SECTION 3.5: Ordered Today
+    # =========================================
+    if st.session_state.ordered_items:
+        st.header("📦 Ordered Today")
+        st.markdown("Items marked as ordered during this session")
+        
+        # Create DataFrame of ordered items by filtering alerts
+        if not alerts.empty:
+            ordered_items_df = alerts[alerts['ORDERED'] == True].copy()
+            
+            if not ordered_items_df.empty:
+                # Display ordered items
+                st.dataframe(
+                    ordered_items_df[['ORGANIZATION', 'LOCATION', 'ITEM', 'CLOSING_STOCK', 'AVG_DAILY_USAGE', 'PRIORITY_SCORE']],
+                    hide_index=True,
+                    column_config={
+                        "ORGANIZATION": "Organization",
+                        "LOCATION": "Location",
+                        "ITEM": "Item",
+                        "CLOSING_STOCK": st.column_config.NumberColumn("Current Stock", format="%d units"),
+                        "AVG_DAILY_USAGE": st.column_config.NumberColumn("Daily Usage", format="%.2f units"),
+                        "PRIORITY_SCORE": st.column_config.NumberColumn("Priority", format="%.1f")
+                    }
+                )
+                
+                st.caption(f"Total items ordered: {len(ordered_items_df)}")
+            else:
+                st.info("Items marked as ordered will appear here.")
+        
+        st.markdown("---")
     
     # =========================================
     # SECTION 4: Reorder Recommendations
