@@ -1,0 +1,31 @@
+{
+  "location_rules": [
+    {
+      "pattern": "Emergency Unit",
+      "score": 12,
+      "description": "Critical emergency care location"
+    }
+  ],
+  "item_rules": [
+    {
+      "items": [
+        "Paracetamol",
+        "Insulin",
+        "Syringes",
+        "Bandages",
+        "Masks",
+        "Gloves"
+      ],
+      "score": 7,
+      "description": "Critical medical supplies"
+    },
+    {
+      "items": [
+        "Rice"
+      ],
+      "score": 5,
+      "description": "Essential food supplies"
+    }
+  ],
+  "default_score": 3
+}

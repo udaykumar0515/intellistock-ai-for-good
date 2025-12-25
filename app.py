@@ -16,6 +16,33 @@ from snowflake_connector import (
     test_connection
 )
 from utils.calculations import generate_explanation, get_urgency_level
+import json
+from pathlib import Path
+
+# Load criticality configuration
+def load_criticality_config():
+    """Load criticality configuration from JSON file."""
+    config_path = Path(__file__).parent / 'criticality_config.json'
+    
+    if config_path.exists():
+        try:
+            with open(config_path, 'r') as f:
+                return json.load(f)
+        except:
+            pass
+    
+    # Default config if file doesn't exist or can't be loaded
+    return {
+        "location_rules": [{"pattern": "Emergency Unit", "score": 10, "description": "Critical emergency care location"}],
+        "item_rules": [
+            {"items": ["Paracetamol", "Insulin", "Syringes", "Bandages", "Masks", "Gloves"], "score": 7, "description": "Critical medical supplies"},
+            {"items": ["Rice"], "score": 5, "description": "Essential food supplies"}
+        ],
+        "default_score": 3
+    }
+
+# Load config at startup
+criticality_config = load_criticality_config()
 
 # Page configuration
 st.set_page_config(
@@ -70,35 +97,40 @@ if 'ordered_items' not in st.session_state:
     st.session_state.ordered_items = set()  # Store as (org, location, item) tuples
 
 # Helper function for priority scoring
-def calculate_priority_score(row):
-    """Calculate action priority score for high-risk items."""
-
+def calculate_priority_score(row, config=None):
+    """Calculate action priority score for high-risk items using configurable criticality."""
+    if config is None:
+        config = criticality_config
+    
     # Convert numeric types safely
     lead_time = float(row['LEAD_TIME_DAYS'])
     avg_daily_usage = float(row['AVG_DAILY_USAGE'])
     closing_stock = float(row['CLOSING_STOCK'])
-
-    # Criticality score
+    
+    # Criticality score from config
     location = str(row.get('LOCATION', ''))
     item = str(row.get('ITEM', ''))
-
-    if 'Emergency Unit' in location:
-        criticality = 10
-    elif item in ['Paracetamol', 'Insulin', 'Syringes', 'Bandages', 'Masks', 'Gloves']:
-        criticality = 7
-    elif item in ['Rice']:
-        criticality = 5
-    else:
-        criticality = 3
-
-    # Priority formula
+    
+    criticality = config['default_score']
+    
+    # Check location rules
+    for rule in config['location_rules']:
+        if rule['pattern'] in location:
+            criticality = max(criticality, rule['score'])
+    
+    # Check item rules
+    for rule in config['item_rules']:
+        if item in rule['items']:
+            criticality = max(criticality, rule['score'])
+    
+    # Priority formula (unchanged)
     score = (
         (lead_time * 2.0) +
         (avg_daily_usage * 1.5) +
         criticality -
         (closing_stock * 0.5)
     )
-
+    
     return round(score, 2)
 
 # Helper functions for ordered item tracking
@@ -296,8 +328,78 @@ with st.sidebar:
     
     selected_org = st.selectbox("Organization", org_list)
     selected_loc = st.selectbox("Location", loc_list)
-    selected_item = st.selectbox("Item", item_list)
+    selected_item = st.selectbox("Item", item_list, key="item_filter") # Renamed item_list to item_options in the instruction, but keeping item_list as it's defined above. Added key.
     
+    st.markdown("---")
+    
+    # =========================================
+    # Criticality Configuration Panel
+    # =========================================
+    st.header("🛠️ Criticality Configuration")
+    
+    with st.expander("Edit Criticality Scores"):
+        st.markdown("Adjust how urgency is calculated")
+        
+        # Edit location rules
+        st.subheader("Location Rules")
+        for i, rule in enumerate(criticality_config['location_rules']):
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.text(f"📍 {rule['pattern']}")
+                st.caption(rule['description'])
+            with col2:
+                new_score = st.number_input(
+                    "Score",
+                    min_value=1,
+                    max_value=15,
+                    value=rule['score'],
+                    key=f"loc_{i}",
+                    label_visibility="collapsed"
+                )
+                criticality_config['location_rules'][i]['score'] = new_score
+        
+        # Edit item rules
+        st.subheader("Item Rules")
+        for i, rule in enumerate(criticality_config['item_rules']):
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                items_preview = ", ".join(rule['items'][:3])
+                if len(rule['items']) > 3:
+                    items_preview += f"... (+{len(rule['items']) - 3} more)"
+                st.text(f"📦 {items_preview}")
+                st.caption(rule['description'])
+            with col2:
+                new_score = st.number_input(
+                    "Score",
+                    min_value=1,
+                    max_value=15,
+                    value=rule['score'],
+                    key=f"item_{i}",
+                    label_visibility="collapsed"
+                )
+                criticality_config['item_rules'][i]['score'] = new_score
+        
+        # Default score
+        st.subheader("Default Score")
+        criticality_config['default_score'] = st.number_input(
+            "Score for other items",
+            min_value=1,
+            max_value=10,
+            value=criticality_config['default_score'],
+            key="default_score_input"
+        )
+        
+        # Save button
+        if st.button("💾 Save Configuration", key="save_config_button"):
+            config_path = Path(__file__).parent / 'criticality_config.json'
+            try:
+                with open(config_path, 'w') as f:
+                    json.dump(criticality_config, f, indent=2)
+                st.success("✅ Configuration saved! Scores will update on next calculation.")
+                st.rerun()
+            except Exception as e:
+                st.error(f"❌ Error saving configuration: {str(e)}")
+
     st.markdown("---")
     st.info("**Note:** Filters are for data slicing only. Analytics logic (thresholds, calculations) is defined in SQL and remains unchanged.")
 
