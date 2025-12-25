@@ -149,15 +149,19 @@ def load_csv_data(csv_path):
 
 def test_connection() -> bool:
     """
-    Simple connection test.
+    Test Snowflake connection and return True/False.
+    Returns False on any connection error instead of raising exception.
     """
-    conn = get_snowflake_connection()
     try:
+        conn = get_snowflake_connection()
         cur = conn.cursor()
         cur.execute(
             "SELECT CURRENT_USER(), CURRENT_ROLE(), CURRENT_DATABASE(), CURRENT_SCHEMA()"
         )
-        return True
-    finally:
+        result = cur.fetchone()
         cur.close()
         conn.close()
+        return result is not None
+    except Exception as e:
+        print(f"Connection test failed: {e}")
+        return False

@@ -3,6 +3,7 @@ IntelliStock - AI-Driven Inventory Health & Stock-Out Alert System
 Streamlit application for Snowflake AI for Good Hackathon
 """
 
+import os
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -66,16 +67,17 @@ st.markdown('<div class="sub-header">AI-Driven Inventory Health & Stock-Out Aler
 
 # Helper function for priority scoring
 def calculate_priority_score(row):
-    """
-    Calculate action priority score for high-risk items.
-    Higher score = more urgent action required.
-    
-    Formula: (lead_time * 2) + (avg_usage * 1.5) + criticality - (stock * 0.5)
-    """
-    location = row.get('LOCATION', '')
-    item = row.get('ITEM', '')
-    
-    # Criticality scoring based on location and item type
+    """Calculate action priority score for high-risk items."""
+
+    # Convert numeric types safely
+    lead_time = float(row['LEAD_TIME_DAYS'])
+    avg_daily_usage = float(row['AVG_DAILY_USAGE'])
+    closing_stock = float(row['CLOSING_STOCK'])
+
+    # Criticality score
+    location = str(row.get('LOCATION', ''))
+    item = str(row.get('ITEM', ''))
+
     if 'Emergency Unit' in location:
         criticality = 10
     elif item in ['Paracetamol', 'Insulin', 'Syringes', 'Bandages', 'Masks', 'Gloves']:
@@ -84,14 +86,15 @@ def calculate_priority_score(row):
         criticality = 5
     else:
         criticality = 3
-    
-    # Priority formula (deterministic, no ML)
+
+    # Priority formula
     score = (
-        (row['LEAD_TIME_DAYS'] * 2) +
-        (row['AVG_DAILY_USAGE'] * 1.5) +
+        (lead_time * 2.0) +
+        (avg_daily_usage * 1.5) +
         criticality -
-        (row['CLOSING_STOCK'] * 0.5)
+        (closing_stock * 0.5)
     )
+
     return round(score, 2)
 
 # Sidebar
@@ -102,7 +105,14 @@ with st.sidebar:
     
     # Connection test
     if st.button("Test Snowflake Connection"):
-        test_connection()
+        try:
+            if test_connection():
+                st.success("✅ Connected to Snowflake successfully!")
+                st.info(f"📊 Database: {os.getenv('SNOWFLAKE_DATABASE')}\n\n🏢 Warehouse: {os.getenv('SNOWFLAKE_WAREHOUSE')}")
+            else:
+                st.error("❌ Connection test failed")
+        except Exception as e:
+            st.error(f"❌ Connection error: {str(e)}")
     
     # Initialize database
     if st.button("Initialize Database"):
@@ -142,7 +152,11 @@ with st.sidebar:
         item_list = ['All'] + items['ITEM'].tolist() if not items.empty else ['All']
         
     except Exception as e:
-        st.warning(f"⚠️ Could not load filter options. Please initialize database and load data first.")
+        error_msg = str(e).lower()
+        if 'does not exist' in error_msg or 'not found' in error_msg:
+            st.warning("⚠️ Database not initialized. Click 'Initialize Database' and 'Load Sample Data' first.")
+        else:
+            st.warning(f"⚠️ Could not load filter options. Please check your connection.")
         org_list = ['All']
         loc_list = ['All']
         item_list = ['All']
@@ -156,6 +170,21 @@ with st.sidebar:
 
 # Main content
 try:
+    # Build alerts query with filters (using safe SQL escaping)
+    where_clauses = []
+    if selected_org != 'All':
+        # Use replace to escape single quotes for SQL safety
+        safe_org = selected_org.replace("'", "''")
+        where_clauses.append(f"organization = '{safe_org}'")
+    if selected_loc != 'All':
+        safe_loc = selected_loc.replace("'", "''")
+        where_clauses.append(f"location = '{safe_loc}'")
+    if selected_item != 'All':
+        safe_item = selected_item.replace("'", "''")
+        where_clauses.append(f"item = '{safe_item}'")
+
+    where_str = " AND " + " AND ".join(where_clauses) if where_clauses else ""
+
     # =========================================
     # SECTION 0: Today's Action Panel
     # =========================================
@@ -362,21 +391,6 @@ try:
     # =========================================
     st.header("⚠️ Stock-Out Alerts (HIGH Risk)")
     st.markdown("Items at high risk of stock-out (days left ≤ lead time)")
-    
-    # Build alerts query with filters (using safe SQL escaping)
-    where_clauses = []
-    if selected_org != 'All':
-        # Use replace to escape single quotes for SQL safety
-        safe_org = selected_org.replace("'", "''")
-        where_clauses.append(f"organization = '{safe_org}'")
-    if selected_loc != 'All':
-        safe_loc = selected_loc.replace("'", "''")
-        where_clauses.append(f"location = '{safe_loc}'")
-    if selected_item != 'All':
-        safe_item = selected_item.replace("'", "''")
-        where_clauses.append(f"item = '{safe_item}'")
-    
-    where_str = " AND " + " AND ".join(where_clauses) if where_clauses else ""
     
     alerts_query = f"""
     WITH analytics AS (
