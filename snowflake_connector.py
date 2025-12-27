@@ -6,10 +6,12 @@ Supports both local Streamlit (using .env credentials) and Snowflake Streamlit n
 import os
 import snowflake.connector
 import pandas as pd
-from dotenv import load_dotenv
-
-# Load environment variables (only used in local mode)
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    # Snowflake environment does not support dotenv
+    pass
 
 
 def _is_snowflake_environment():
