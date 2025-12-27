@@ -1,5 +1,3 @@
-# Environment configuration
-# .env
 
 # Python
 __pycache__/
@@ -7,6 +5,9 @@ __pycache__/
 *$py.class
 *.so
 .Python
+
+# Environment variables (contains sensitive credentials)
+.env
 
 # Virtual environments
 venv/
