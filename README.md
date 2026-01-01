@@ -4,6 +4,12 @@
 > **Version:** 2.1  
 > **Status:** Production Ready ✅
 
+## 🌐 Live Demo
+
+**Try IntelliStock now:** [https://intellistock-ai-dashbaord-mvp.streamlit.app](https://intellistock-ai-dashbaord-mvp.streamlit.app)
+
+---
+
 IntelliStock is an intelligent inventory management platform designed for essential goods organizations (hospitals, NGOs, government agencies). It provides real-time stock-out predictions, priority-based action recommendations, and data-driven decision support powered by Snowflake.
 
 ---
@@ -188,23 +194,6 @@ Sample data is included in `data/inventory_sample.csv`
 
 ---
 
-## 🌐 Deployment to Streamlit Cloud
-
-1. **Push to GitHub** (`.env` is automatically ignored)
-2. **Go to** [share.streamlit.io](https://share.streamlit.io)
-3. **Deploy** from your repository
-4. **Add Secrets** in Streamlit Cloud dashboard:
-   ```toml
-   SNOWFLAKE_ACCOUNT = "your_account"
-   SNOWFLAKE_USER = "your_username"
-   SNOWFLAKE_PASSWORD = "your_password"
-   SNOWFLAKE_ROLE = "your_role"
-   SNOWFLAKE_WAREHOUSE = "your_warehouse"
-   SNOWFLAKE_DATABASE = "your_database"
-   SNOWFLAKE_SCHEMA = "your_schema"
-   ```
-5. **Done!** The app automatically detects and uses Streamlit secrets
-
 ---
 
 ## 🛠️ Tech Stack
@@ -317,9 +306,3 @@ Open source - Available for use by humanitarian organizations worldwide.
 
 **Built for:** Snowflake AI for Good Hackathon 2024  
 **Purpose:** Empowering essential goods organizations with intelligent inventory management
-
-Built with ❤️ to prevent stock-outs and save lives.
-
----
-
-**🎉 Making inventory management intelligent, one stock-out alert at a time.** 📦✨
