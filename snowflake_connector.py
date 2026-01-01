@@ -7,6 +7,8 @@ import os
 import snowflake.connector
 import pandas as pd
 from dotenv import load_dotenv
+from snowflake.snowpark import Session
+from snowflake.snowpark.context import set_active_session, get_active_session as sp_get_active_session
 
 # Load environment variables
 load_dotenv()
@@ -43,10 +45,69 @@ def get_snowflake_connection():
     )
 
 
+def create_snowpark_session(config: dict = None) -> Session:
+    """
+    Create and return a Snowpark Session. Reads configuration from ENV if no config provided.
+    Also sets the session as the active session (so Streamlit's get_active_session() works).
+    """
+    if config is None:
+        # Build config from environment variables (dotenv should be loaded already)
+        config = {
+            'account': os.getenv('SNOWFLAKE_ACCOUNT'),
+            'user': os.getenv('SNOWFLAKE_USER'),
+            'password': os.getenv('SNOWFLAKE_PASSWORD'),
+            'role': os.getenv('SNOWFLAKE_ROLE'),
+            'warehouse': os.getenv('SNOWFLAKE_WAREHOUSE'),
+            'database': os.getenv('SNOWFLAKE_DATABASE'),
+            'schema': os.getenv('SNOWFLAKE_SCHEMA'),
+        }
+        # Optionally support external browser authenticator
+        if os.getenv('SNOWFLAKE_AUTHENTICATOR'):
+            config['authenticator'] = os.getenv('SNOWFLAKE_AUTHENTICATOR')
+
+    # Remove None values
+    config = {k: v for k, v in config.items() if v is not None}
+
+    session = Session.builder.configs(config).create()
+    # Set as active so get_active_session() works in other modules
+    try:
+        set_active_session(session)
+    except Exception:
+        # Non-critical if set_active_session fails
+        pass
+    return session
+
+
+def get_snowpark_session() -> Session:
+    """Return an active Snowpark session if available, otherwise create one."""
+    try:
+        s = sp_get_active_session()
+        if s is not None:
+            return s
+    except Exception:
+        pass
+    # Create a new one if not found
+    try:
+        return create_snowpark_session()
+    except Exception as e:
+        # Could not create Snowpark session
+        raise RuntimeError(f"Could not create Snowpark session: {e}")
+
+
 def execute_query(query: str) -> pd.DataFrame:
     """
     Execute a SQL query and return results as DataFrame.
+    Prefer using Snowpark session when available, otherwise fall back to connector.
     """
+    # Try using Snowpark first
+    try:
+        session = get_snowpark_session()
+        if session is not None:
+            return session.sql(query).to_pandas()
+    except Exception:
+        # Fall back to connector approach on any failure
+        pass
+
     conn = get_snowflake_connection()
     try:
         cur = conn.cursor()

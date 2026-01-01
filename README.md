@@ -67,16 +67,10 @@ IntelliStock is an intelligent inventory management system designed for essentia
      SNOWFLAKE_DATABASE=your_database
      SNOWFLAKE_SCHEMA=your_schema
      SNOWFLAKE_WAREHOUSE=your_warehouse
-     ```
-
-### Running the Application
-
-**Option 1: Using the batch file (Windows):**
-```bash
-run.bat
-```
-
-**Option 2: Manual command:**
+  # Optional: use SSO via external browser
+  SNOWFLAKE_AUTHENTICATOR=externalbrowser
+  ```
+  Note: If using SSO/SSO-based auth, set `SNOWFLAKE_AUTHENTICATOR` accordingly (e.g., `externalbrowser`). If you prefer key-based auth, add private key configuration and update `snowflake_connector.py` accordingly.
 ```bash
 venv\Scripts\python.exe -m streamlit run Home.py
 ```
@@ -239,6 +233,7 @@ Customize how locations and items are prioritized:
 ```
 streamlit>=1.28.0
 snowflake-connector-python>=3.0.0
+snowflake-snowpark-python>=1.3.0
 pandas>=2.0.0
 plotly>=5.14.0
 python-dotenv>=1.0.0

@@ -13,7 +13,8 @@ from snowflake_connector import (
     execute_query,
     create_tables_if_not_exist,
     load_csv_data,
-    test_connection
+    test_connection,
+    create_snowpark_session
 )
 from utils.calculations import generate_explanation, get_urgency_level
 import json
@@ -274,6 +275,17 @@ with st.sidebar:
             if test_connection():
                 st.success("✅ Connected to Snowflake successfully!")
                 st.info(f"📊 Database: {os.getenv('SNOWFLAKE_DATABASE')}\n\n🏢 Warehouse: {os.getenv('SNOWFLAKE_WAREHOUSE')}")
+                # Try to create a Snowpark session (optional but recommended)
+                try:
+                    session = create_snowpark_session()
+                    try:
+                        user = session.sql("SELECT CURRENT_USER()").collect()[0][0]
+                    except Exception:
+                        user = "(unknown)"
+                    st.success("✅ Snowpark session initialized")
+                    st.info(f"Snowpark user: {user}")
+                except Exception as e:
+                    st.warning(f"Could not initialize Snowpark session: {e}")
             else:
                 st.error("❌ Connection test failed")
         except Exception as e:
