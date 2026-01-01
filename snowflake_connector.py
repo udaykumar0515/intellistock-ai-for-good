@@ -1,21 +1,66 @@
 """
 Snowflake Connector for IntelliStock
-Uses password-based authentication via environment variables.
+Flexible config loading:
+ - Loads `.env` locally via python-dotenv if available
+ - Reads env vars (after .env is loaded)
+ - Falls back to Streamlit `st.secrets` when env vars are missing
+This makes it safe to deploy with Streamlit Cloud secrets and to run locally with a `.env` file.
 """
 
 import os
 import snowflake.connector
 import pandas as pd
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Try to load `.env` if python-dotenv is installed. This is non-fatal if not present.
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # loads .env into environment variables if file exists
+except Exception:
+    pass
+
+# Try to import streamlit (optional). If available, we'll read `st.secrets` as a fallback.
+try:
+    import streamlit as st
+except Exception:
+    st = None
 
 
-def get_snowflake_connection():
+def _get_st_secret(key: str):
+    """Return secret value from Streamlit secrets if available.
+
+    Supports both top-level keys (SNOWFLAKE_USER) and a nested `snowflake` section
+    (e.g., secrets.toml with `[snowflake] SNOWFLAKE_USER = "..."`).
     """
-    Create and return a Snowflake connection using env variables.
-    """
+    if not st:
+        return None
+    try:
+        # Try top-level secret key first
+        if key in st.secrets:
+            return st.secrets[key]
+    except Exception:
+        # st.secrets may behave like an attribute in special contexts; ignore errors
+        pass
+
+    try:
+        nested = st.secrets.get("snowflake")
+        if isinstance(nested, dict):
+            return nested.get(key)
+    except Exception:
+        pass
+
+    return None
+
+
+def _get_env_or_secret(key: str):
+    """Return value from env var if present, else from Streamlit secrets if present."""
+    val = os.getenv(key)
+    if val:
+        return val
+    return _get_st_secret(key)
+
+
+def get_snowflake_config() -> dict:
+    """Return a dict with Snowflake connection parameters, or raise RuntimeError if missing."""
     required_vars = [
         "SNOWFLAKE_ACCOUNT",
         "SNOWFLAKE_USER",
@@ -23,23 +68,28 @@ def get_snowflake_connection():
         "SNOWFLAKE_ROLE",
         "SNOWFLAKE_WAREHOUSE",
         "SNOWFLAKE_DATABASE",
-        "SNOWFLAKE_SCHEMA"
+        "SNOWFLAKE_SCHEMA",
     ]
 
-    missing = [v for v in required_vars if not os.getenv(v)]
+    cfg = {k: _get_env_or_secret(k) for k in required_vars}
+    missing = [k for k, v in cfg.items() if not v]
     if missing:
-        raise RuntimeError(
-            f"Missing environment variables: {', '.join(missing)}"
-        )
+        raise RuntimeError(f"Missing Snowflake config values: {', '.join(missing)}")
 
+    return cfg
+
+
+def get_snowflake_connection():
+    """Create and return a Snowflake connection using combined config sources."""
+    cfg = get_snowflake_config()
     return snowflake.connector.connect(
-        account=os.getenv("SNOWFLAKE_ACCOUNT"),
-        user=os.getenv("SNOWFLAKE_USER"),
-        password=os.getenv("SNOWFLAKE_PASSWORD"),
-        role=os.getenv("SNOWFLAKE_ROLE"),
-        warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
-        database=os.getenv("SNOWFLAKE_DATABASE"),
-        schema=os.getenv("SNOWFLAKE_SCHEMA"),
+        account=cfg["SNOWFLAKE_ACCOUNT"],
+        user=cfg["SNOWFLAKE_USER"],
+        password=cfg["SNOWFLAKE_PASSWORD"],
+        role=cfg["SNOWFLAKE_ROLE"],
+        warehouse=cfg["SNOWFLAKE_WAREHOUSE"],
+        database=cfg["SNOWFLAKE_DATABASE"],
+        schema=cfg["SNOWFLAKE_SCHEMA"],
     )
 
 

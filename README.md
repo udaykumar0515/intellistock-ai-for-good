@@ -58,8 +58,7 @@ IntelliStock is an intelligent inventory management system designed for essentia
    ```
 
 5. **Configure Snowflake credentials:**
-   - Copy `.env.example` to `.env`
-   - Fill in your Snowflake credentials:
+   - Option A (local development): Copy `.env.example` to `.env` and fill in your Snowflake credentials (do NOT commit `.env`):
      ```
      SNOWFLAKE_ACCOUNT=your_account
      SNOWFLAKE_USER=your_username
@@ -68,6 +67,29 @@ IntelliStock is an intelligent inventory management system designed for essentia
      SNOWFLAKE_SCHEMA=your_schema
      SNOWFLAKE_WAREHOUSE=your_warehouse
      ```
+
+   - Option B (Streamlit Cloud / deployment): Add the same keys in Streamlit `Secrets` (or use a `secrets.toml`). Examples:
+     - Top-level keys in Streamlit Secrets UI:
+       ```toml
+       SNOWFLAKE_ACCOUNT = "your_account"
+       SNOWFLAKE_USER = "your_username"
+       SNOWFLAKE_PASSWORD = "your_password"
+       SNOWFLAKE_DATABASE = "your_database"
+       SNOWFLAKE_SCHEMA = "your_schema"
+       SNOWFLAKE_WAREHOUSE = "your_warehouse"
+       ```
+     - Or a nested section in `.streamlit/secrets.toml`:
+       ```toml
+       [snowflake]
+       SNOWFLAKE_ACCOUNT = "your_account"
+       SNOWFLAKE_USER = "your_username"
+       SNOWFLAKE_PASSWORD = "your_password"
+       SNOWFLAKE_DATABASE = "your_database"
+       SNOWFLAKE_SCHEMA = "your_schema"
+       SNOWFLAKE_WAREHOUSE = "your_warehouse"
+       ```
+
+   - The app reads config in this priority: **environment variables** (including loaded `.env`) → **Streamlit `st.secrets`**. This means you can keep secrets in Streamlit Cloud and not commit `.env` to the repo.
 
 ### Running the Application
 
