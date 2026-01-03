@@ -10,6 +10,16 @@ This makes it safe to deploy with Streamlit Cloud secrets and to run locally wit
 import os
 import snowflake.connector
 import pandas as pd
+from dotenv import load_dotenv
+
+# Try to import Snowpark (optional - for advanced features)
+try:
+    from snowflake.snowpark import Session
+    SNOWPARK_AVAILABLE = True
+except ImportError:
+    SNOWPARK_AVAILABLE = False
+    Session = None
+
 
 # Try to load `.env` if python-dotenv is installed. This is non-fatal if not present.
 try:
@@ -93,10 +103,67 @@ def get_snowflake_connection():
     )
 
 
+def create_snowpark_session(config: dict = None):
+    """
+    Create and return a Snowpark Session. Reads configuration from ENV if no config provided.
+    Returns None if Snowpark is not available.
+    """
+    if not SNOWPARK_AVAILABLE or Session is None:
+        return None
+        
+    if config is None:
+        # Build config from environment variables (dotenv should be loaded already)
+        config = {
+            'account': os.getenv('SNOWFLAKE_ACCOUNT'),
+            'user': os.getenv('SNOWFLAKE_USER'),
+            'password': os.getenv('SNOWFLAKE_PASSWORD'),
+            'role': os.getenv('SNOWFLAKE_ROLE'),
+            'warehouse': os.getenv('SNOWFLAKE_WAREHOUSE'),
+            'database': os.getenv('SNOWFLAKE_DATABASE'),
+            'schema': os.getenv('SNOWFLAKE_SCHEMA'),
+        }
+        # Optionally support external browser authenticator
+        if os.getenv('SNOWFLAKE_AUTHENTICATOR'):
+            config['authenticator'] = os.getenv('SNOWFLAKE_AUTHENTICATOR')
+
+    # Remove None values
+    config = {k: v for k, v in config.items() if v is not None}
+
+    try:
+        session = Session.builder.configs(config).create()
+        return session
+    except Exception as e:
+        print(f"Could not create Snowpark session: {e}")
+        return None
+
+
+def get_snowpark_session():
+    """Return an active Snowpark session if available, otherwise create one.
+    Returns None if Snowpark is not available."""
+    if not SNOWPARK_AVAILABLE:
+        return None
+        
+    try:
+        return create_snowpark_session()
+    except Exception as e:
+        print(f"Could not get Snowpark session: {e}")
+        return None
+
+
 def execute_query(query: str) -> pd.DataFrame:
     """
     Execute a SQL query and return results as DataFrame.
+    Prefer using Snowpark session when available, otherwise fall back to connector.
     """
+    # Try using Snowpark first
+    try:
+        session = get_snowpark_session()
+        if session is not None:
+            return session.sql(query).to_pandas()
+    except Exception:
+        # Fall back to connector approach on any failure
+        pass
+
     conn = get_snowflake_connection()
     try:
         cur = conn.cursor()

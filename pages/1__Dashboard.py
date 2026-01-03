@@ -24,6 +24,22 @@ from snowflake_connector import (
 from utils.calculations import generate_explanation, get_urgency_level
 import json
 
+# Import Snowflake tasks helper for Dynamic Tables and Unistore
+try:
+    from snowflake_tasks_helper import (
+        get_dynamic_table_refresh_status,
+        log_action_to_unistore,
+        create_order_in_unistore,
+        get_system_health_dashboard
+    )
+    TASKS_HELPER_AVAILABLE = True
+except ImportError:
+    TASKS_HELPER_AVAILABLE = False
+
+# Feature flags
+USE_DYNAMIC_TABLES = True  # Set to True to use Dynamic Tables instead of CTEs
+USE_UNISTORE_LOGGING = True  # Set to True to enable action logging to Unistore
+
 # Load criticality configuration
 def load_criticality_config():
     """Load criticality configuration from JSON file."""
@@ -301,8 +317,25 @@ with st.sidebar:
     selected_loc = st.selectbox("Location", loc_list)
     selected_item = st.selectbox("Item", item_list, key="item_filter")
     
+    
+    st.markdown("---")
+    
+    # Data Freshness Indicator
+    if USE_DYNAMIC_TABLES and TASKS_HELPER_AVAILABLE:
+        st.subheader("📊 Data Freshness")
+        try:
+            dt_status = get_dynamic_table_refresh_status('STOCK_ANALYTICS_DT')
+            if "last_refresh_end" in dt_status and dt_status['last_refresh_end'] != "N/A":
+                last_refresh = dt_status['last_refresh_end']
+                st.success(f"✅ Last updated: {last_refresh}")
+            else:
+                st.info("⏳ Refreshing...")
+        except:
+            st.caption("Data freshness info unavailable")
+    
     st.markdown("---")
     st.info("💡 **Tip:** Visit Data Management to upload data, or Configuration to adjust scoring rules.")
+
 
 # Main content
 try:
