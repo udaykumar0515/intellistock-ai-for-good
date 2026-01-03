@@ -1,0 +1,151 @@
+date,organization,location,item,opening_stock,received,issued,closing_stock,lead_time_days
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,Water Purification Tablets (Pack of 50),10,0,8,2,2
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),50,0,45,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),20,0,20,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Bottled Water (1L),5000,2000,500,6500,1
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,1000,500,100,1400,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Family Tents (4-Person),200,100,20,280,10
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Solar Lanterns,400,50,10,440,5
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,"Hygiene Kits (Soap, Toothpaste)",800,200,100,900,4
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Tarpaulins (Heavy Duty),150,50,40,160,6
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Baby Formula (Powder),300,50,30,320,4
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),500,0,50,450,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Sleeping Mats,1000,0,100,900,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Cooking Oil (5L),200,50,40,210,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Mosquito Nets,600,100,50,650,4
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),350,0,20,330,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),21,0,21,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Family Tents (4-Person),210,105,21,294,10
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),357,0,20,337,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),16,0,16,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),17,0,17,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Family Tents (4-Person),166,83,16,233,10
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),531,0,53,478,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Bottled Water (1L),4709,1883,470,6122,1
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Solar Lanterns,462,57,11,508,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),45,0,41,4,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Bottled Water (1L),4495,1798,449,5844,1
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Family Tents (4-Person),206,103,20,289,10
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),50,0,45,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Bottled Water (1L),4965,1986,496,6455,1
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,"Hygiene Kits (Soap, Toothpaste)",661,165,82,744,4
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),19,0,19,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),569,0,56,513,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),49,0,44,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),44,0,40,4,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Bottled Water (1L),4431,1772,443,5760,1
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Solar Lanterns,352,44,8,388,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Sleeping Mats,1159,0,115,1044,5
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),584,0,58,526,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Bottled Water (1L),5800,2320,580,7540,1
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Bottled Water (1L),5270,2108,527,6851,1
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Tarpaulins (Heavy Duty),172,57,45,184,6
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),21,0,21,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),360,0,20,340,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Tarpaulins (Heavy Duty),125,41,33,133,6
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),514,0,51,463,3
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),337,0,19,318,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Baby Formula (Powder),267,44,26,285,4
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Cooking Oil (5L),210,52,42,220,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),42,0,38,4,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),58,0,52,6,5
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),521,0,52,469,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),18,0,18,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),51,0,46,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),49,0,44,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),21,0,21,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Mosquito Nets,594,99,49,644,4
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),23,0,23,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),45,0,40,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),367,0,21,346,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),16,0,16,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,"Hygiene Kits (Soap, Toothpaste)",803,200,100,903,4
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,1110,555,111,1554,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,1158,579,115,1622,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Tarpaulins (Heavy Duty),146,48,39,155,6
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,814,407,81,1140,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Baby Formula (Powder),263,43,26,280,4
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),314,0,17,297,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),56,0,50,6,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),45,0,41,4,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Baby Formula (Powder),275,45,27,293,4
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,"Hygiene Kits (Soap, Toothpaste)",699,174,87,786,4
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),21,0,21,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,988,494,98,1384,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),18,0,18,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,"Hygiene Kits (Soap, Toothpaste)",835,208,104,939,4
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,Water Purification Tablets (Pack of 50),8,0,6,2,2
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),44,0,39,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Sleeping Mats,976,0,97,879,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Baby Formula (Powder),329,54,32,351,4
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Mosquito Nets,627,104,52,679,4
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),18,0,18,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),311,0,17,294,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,815,407,81,1141,3
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),290,0,16,274,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Tarpaulins (Heavy Duty),153,51,41,163,6
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),47,0,42,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,896,448,89,1255,3
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,"Hygiene Kits (Soap, Toothpaste)",764,191,95,860,4
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Family Tents (4-Person),231,115,23,323,10
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Solar Lanterns,406,50,10,446,5
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,Water Purification Tablets (Pack of 50),10,0,8,2,2
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,Water Purification Tablets (Pack of 50),11,0,9,2,2
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Solar Lanterns,479,59,11,527,5
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Solar Lanterns,448,56,11,493,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Bottled Water (1L),5973,2389,597,7765,1
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),583,0,58,525,3
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),378,0,21,357,3
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),361,0,20,341,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,1150,575,115,1610,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Sleeping Mats,1058,0,105,953,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,1114,557,111,1560,3
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),541,0,54,487,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Cooking Oil (5L),182,45,36,191,5
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,Water Purification Tablets (Pack of 50),10,0,8,2,2
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,"Hygiene Kits (Soap, Toothpaste)",759,189,94,854,4
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Family Tents (4-Person),180,90,18,252,10
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),468,0,46,422,3
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Cooking Oil (5L),208,52,41,219,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Rice (25kg Bags),22,0,22,0,7
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,"Hygiene Kits (Soap, Toothpaste)",656,164,82,738,4
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Family Tents (4-Person),172,86,17,241,10
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Tarpaulins (Heavy Duty),178,59,47,190,6
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,Water Purification Tablets (Pack of 50),9,0,7,2,2
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Baby Formula (Powder),357,59,35,381,4
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Solar Lanterns,361,45,9,397,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Family Tents (4-Person),186,93,18,261,10
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,1150,575,115,1610,3
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),589,0,58,531,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Sleeping Mats,806,0,80,726,5
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,Water Purification Tablets (Pack of 50),10,0,8,2,2
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Sleeping Mats,1000,0,100,900,5
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,Water Purification Tablets (Pack of 50),11,0,9,2,2
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),46,0,41,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,"Hygiene Kits (Soap, Toothpaste)",908,227,113,1022,4
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Baby Formula (Powder),326,54,32,348,4
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Bottled Water (1L),4156,1662,415,5403,1
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),336,0,19,317,3
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),519,0,51,468,3
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,Water Purification Tablets (Pack of 50),8,0,6,2,2
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Sleeping Mats,868,0,86,782,5
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Bottled Water (1L),4777,1911,477,6211,1
+2026-01-03,Global Relief Org - Central Hub,Zone D - Equipment,Flashlights (LED),332,0,19,313,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Tarpaulins (Heavy Duty),164,54,43,175,6
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Cooking Oil (5L),228,57,45,240,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Family Tents (4-Person),231,115,23,323,10
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Bottled Water (1L),5977,2390,597,7770,1
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Baby Formula (Powder),312,52,31,333,4
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Family Tents (4-Person),223,111,22,312,10
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,811,405,81,1135,3
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,Water Purification Tablets (Pack of 50),8,0,6,2,2
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Sleeping Mats,1172,0,117,1055,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),56,0,51,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Mosquito Nets,538,89,44,583,4
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),56,0,51,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,First Aid Kits (Basic),458,0,45,413,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Tarpaulins (Heavy Duty),160,53,42,171,6
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),53,0,48,5,5
+2026-01-03,Global Relief Org - Central Hub,Zone A - Sanitation,"Hygiene Kits (Soap, Toothpaste)",656,164,82,738,4
+2026-01-03,Global Relief Org - Central Hub,Zone C - Food Storage,Canned Beans,833,416,83,1166,3
+2026-01-03,Global Relief Org - Central Hub,Zone B - Shelter,Emergency Blankets (Thermal),55,0,49,6,5

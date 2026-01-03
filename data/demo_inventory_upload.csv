@@ -1,0 +1,21 @@
+date,organization,location,item,opening_stock,received,issued,closing_stock,lead_time_days
+2026-01-03,City General Hospital,Refrigerated Storage,Insulin Glargine,5,0,5,0,3
+2026-01-03,City General Hospital,Emergency Room,Epinephrine Injection,10,0,8,2,5
+2026-01-03,City General Hospital,Main Pharmacy,Paracetamol 500mg,500,1000,50,1450,2
+2026-01-03,City General Hospital,ICU Supply,Saline Solution 500ml,200,100,30,270,4
+2026-01-03,City General Hospital,General Store,Surgical Masks,5000,0,200,4800,7
+2026-01-03,City General Hospital,Main Pharmacy,Amoxicillin 500mg,100,50,20,130,5
+2026-01-03,City General Hospital,General Store,Sterile Gloves (M),300,0,50,250,3
+2026-01-03,City General Hospital,ICU Supply,Syringes 5ml,150,0,10,140,4
+2026-01-03,City General Hospital,ICU Supply,Syringes 5ml,153,0,12,141,4
+2026-01-03,City General Hospital,General Store,Surgical Masks,4996,0,203,4793,7
+2026-01-03,City General Hospital,ICU Supply,Syringes 5ml,141,0,11,130,4
+2026-01-03,City General Hospital,General Store,Surgical Masks,4995,0,200,4795,7
+2026-01-03,City General Hospital,ICU Supply,Syringes 5ml,144,0,5,139,4
+2026-01-03,City General Hospital,Refrigerated Storage,Insulin Glargine,0,0,0,0,3
+2026-01-03,City General Hospital,Refrigerated Storage,Insulin Glargine,0,0,0,0,3
+2026-01-03,City General Hospital,ICU Supply,Saline Solution 500ml,194,105,31,268,4
+2026-01-03,City General Hospital,ICU Supply,Syringes 5ml,150,0,6,144,4
+2026-01-03,City General Hospital,Emergency Room,Epinephrine Injection,0,0,0,0,5
+2026-01-03,City General Hospital,Emergency Room,Epinephrine Injection,18,0,11,7,5
+2026-01-03,City General Hospital,Emergency Room,Epinephrine Injection,0,0,0,0,5
