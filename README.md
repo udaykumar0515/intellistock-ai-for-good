@@ -2,7 +2,8 @@
 
 > **Hackathon Submission:** Snowflake AI for Good Hackathon 2025  
 > **Problem Statement:** Inventory Management for Essential Goods  
-> **Status:** 100% Requirements Compliance ✅
+> **Status:** 100% Requirements Compliance ✅  
+> **Live Demo:** [https://intellistock-ai-dashbaord-mvp.streamlit.app/](https://intellistock-ai-dashbaord-mvp.streamlit.app/)
 
 ![IntelliStock Home](screenshots/home_page.png)
 
