@@ -27,3 +27,4 @@ Thumbs.db
 # Streamlit
 .streamlit/secrets.toml
 docs/
+PROJECT_FULL_DOC.md
