@@ -6,7 +6,7 @@ AI-driven inventory health system for essential goods organizations.
 > 
 > **Live Demo:** [https://intellistock-ai-dashbaord-mvp.streamlit.app/](https://intellistock-ai-dashbaord-mvp.streamlit.app/)
 
-![IntelliStock Home](screenshots/home_page.png)
+![IntelliStock Home](screenshots/home.png)
 
 ## Overview
 
